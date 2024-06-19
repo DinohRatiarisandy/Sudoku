@@ -1,7 +1,5 @@
 package checker
 
-// Is the board Unique ?
-
 // Can take place at board[i][j] ?
 // -> Unique in row, column and slot 3x3
 func IsValidToPlace(sudoku *[9][9]int, rowIdx, colIdx, numberToPlace int) bool {
@@ -40,5 +38,3 @@ func isUniqueOnBox(sudoku *[9][9]int, rowIdx, colIdx, numberToPlace int) bool {
 	}
 	return true
 }
-
-// Is solved ?
