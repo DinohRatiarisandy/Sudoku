@@ -8,18 +8,80 @@ import (
 )
 
 type Sudoku struct {
-	State [9][9]int
+	State      [9][9]int
+	Solution   [9][9]int
+	Difficulty string
 }
 
-func Generate() *Sudoku {
+func getDifficulty(difficulty string) (min, max int) {
+	switch difficulty {
+	case "easy":
+		min = 36
+		max = 49
+	case "medium":
+		min = 32
+		max = 35
+	case "hard":
+		min = 28
+		max = 31
+	case "evil":
+		min = 17
+		max = 27
+	}
+	return min, max
+}
+
+func GenerateNewSudoku(difficulty string) *Sudoku {
+	min, max := getDifficulty(difficulty)
+	numToRemove := 81 - (rand.Intn(max-min+1) + min)
+	fmt.Println("Number removed:", numToRemove)
+	fmt.Println("Difficulty:", difficulty)
+
 	var newSudoku Sudoku
 	newSudoku.solve()
+	newSudoku.Solution = newSudoku.State
+	newSudoku.Difficulty = difficulty
+
+	idxCellsToRemove := rand.Perm(81)
+
+	for _, cell := range idxCellsToRemove {
+		row := cell / 9
+		col := cell % 9
+		backup := newSudoku.State[row][col]
+		newSudoku.State[row][col] = 0
+
+		if newSudoku.countSolution() != 1 {
+			newSudoku.State[row][col] = backup
+		} else {
+			numToRemove -= 1
+			if numToRemove <= 0 {
+				break
+			}
+		}
+	}
 	return &newSudoku
 }
 
-func (sudoku *Sudoku) Print() {
-	for _, row := range sudoku.State {
-		fmt.Println(row)
+func (sudoku *Sudoku) Print(what string) {
+	for row := 0; row < 9; row++ {
+		for col := 0; col < 9; col++ {
+			if what == "solution" {
+				fmt.Print(sudoku.Solution[row][col], "  ")
+			} else {
+				if sudoku.State[row][col] > 0 {
+					fmt.Print(sudoku.State[row][col], "  ")
+				} else {
+					fmt.Print("   ")
+				}
+			}
+			if col < 8 && col%3 == 2 {
+				fmt.Print("| ")
+			}
+		}
+		fmt.Print("\n")
+		if row < 8 && row%3 == 2 {
+			fmt.Println("---------+----------+---------")
+		}
 	}
 }
 
