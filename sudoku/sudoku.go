@@ -1,10 +1,12 @@
 package sudoku
 
 import (
-	"fmt"
 	"math/rand"
+	"net/http"
+	"strconv"
 
 	"github.com/DinohRatiarisandy/Sudoku/checker"
+	"github.com/gin-gonic/gin"
 )
 
 type Sudoku struct {
@@ -31,11 +33,19 @@ func getDifficulty(difficulty string) (min, max int) {
 	return min, max
 }
 
-func GenerateNewSudoku(difficulty string) *Sudoku {
+func CreateSudokuPuzzle(c *gin.Context) {
+	difficulty := c.DefaultQuery("difficulty", "easy")
+	newSudokuPuzzle := generateNewSudoku(difficulty)
+	c.JSON(http.StatusOK, gin.H{
+		"state":      toOneDimension(newSudokuPuzzle.State),
+		"solution":   toOneDimension(newSudokuPuzzle.Solution),
+		"difficulty": newSudokuPuzzle.Difficulty,
+	})
+}
+
+func generateNewSudoku(difficulty string) *Sudoku {
 	min, max := getDifficulty(difficulty)
 	numToRemove := 81 - (rand.Intn(max-min+1) + min)
-	fmt.Println("Number removed:", numToRemove)
-	fmt.Println("Difficulty:", difficulty)
 
 	var newSudoku Sudoku
 	newSudoku.solve()
@@ -60,29 +70,6 @@ func GenerateNewSudoku(difficulty string) *Sudoku {
 		}
 	}
 	return &newSudoku
-}
-
-func (sudoku *Sudoku) Print(what string) {
-	for row := 0; row < 9; row++ {
-		for col := 0; col < 9; col++ {
-			if what == "solution" {
-				fmt.Print(sudoku.Solution[row][col], "  ")
-			} else {
-				if sudoku.State[row][col] > 0 {
-					fmt.Print(sudoku.State[row][col], "  ")
-				} else {
-					fmt.Print("   ")
-				}
-			}
-			if col < 8 && col%3 == 2 {
-				fmt.Print("| ")
-			}
-		}
-		fmt.Print("\n")
-		if row < 8 && row%3 == 2 {
-			fmt.Println("---------+----------+---------")
-		}
-	}
 }
 
 func (sudoku *Sudoku) findEmptyCell() (int, int, bool) {
@@ -134,4 +121,15 @@ func (sudoku *Sudoku) solve() bool {
 		}
 	}
 	return false
+}
+
+func toOneDimension(array2D [9][9]int) string {
+	res := ""
+
+	for i := 0; i < 9; i++ {
+		for j := 0; j < 9; j++ {
+			res += strconv.Itoa(array2D[i][j])
+		}
+	}
+	return res
 }

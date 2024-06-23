@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/DinohRatiarisandy/Sudoku/sudoku"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	difficulty := "medium" // difficulty: easy, medium, hard, evil
-	newSudoku := sudoku.GenerateNewSudoku(difficulty)
-	newSudoku.Print("state")
-	fmt.Println("\nSOLUTION")
-	newSudoku.Print("solution")
+	r := gin.Default()
+	r.GET("/newsudoku", sudoku.CreateSudokuPuzzle)
+	r.Run()
 }
