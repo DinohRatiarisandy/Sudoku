@@ -1,5 +1,5 @@
 name: deploy
-run-name: ${{github.actor}} deploy ${{github.repository}} to the server
+run-name: "[RUN]: ${{github.actor}} deploy ${{github.repository}} to the server"
 on:
   push:
     branches:
@@ -20,7 +20,7 @@ jobs:
             cd deploy
             mkdir sudoku
             cd sudoku
-            git clone https://github.com/DinohRatiarisandy/Sudoku .
+            git clone https://github.com/ElSombrero2/Sudoku .
             git checkout env/prod
             git branch
             docker-compose up -d --build --force-recreate
