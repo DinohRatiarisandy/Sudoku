@@ -1,5 +1,5 @@
 name: deploy
-run-name: ${{github.actor}} deploy ${{github.repository}} to the server
+run-name: "[RUN]: ${{github.actor}} deploy ${{github.repository}} to the server"
 on:
   push:
     branches:
