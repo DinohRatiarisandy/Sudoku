@@ -20,7 +20,7 @@ jobs:
             cd deploy
             mkdir sudoku
             cd sudoku
-            git clone https://github.com/DinohRatiarisandy/Sudoku .
+            git clone https://github.com/ElSombrero2/Sudoku .
             git checkout env/prod
             git branch
             docker-compose up -d --build --force-recreate
